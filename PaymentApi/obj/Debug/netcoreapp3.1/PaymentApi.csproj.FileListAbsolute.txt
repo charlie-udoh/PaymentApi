@@ -2,7 +2,6 @@ C:\Personal\Projects\PaymentApi\PaymentApi\bin\Debug\netcoreapp3.1\appsettings.D
 C:\Personal\Projects\PaymentApi\PaymentApi\bin\Debug\netcoreapp3.1\appsettings.json
 C:\Personal\Projects\PaymentApi\PaymentApi\bin\Debug\netcoreapp3.1\Properties\launchSettings.json
 C:\Personal\Projects\PaymentApi\PaymentApi\bin\Debug\netcoreapp3.1\PaymentApi.exe
-C:\Personal\Projects\PaymentApi\PaymentApi\obj\Debug\netcoreapp3.1\PaymentApi.csprojAssemblyReference.cache
 C:\Personal\Projects\PaymentApi\PaymentApi\obj\Debug\netcoreapp3.1\PaymentApi.AssemblyInfoInputs.cache
 C:\Personal\Projects\PaymentApi\PaymentApi\obj\Debug\netcoreapp3.1\PaymentApi.AssemblyInfo.cs
 C:\Personal\Projects\PaymentApi\PaymentApi\obj\Debug\netcoreapp3.1\PaymentApi.RazorTargetAssemblyInfo.cache
@@ -61,3 +60,4 @@ C:\Personal\Projects\PaymentApi\PaymentApi\bin\Debug\netcoreapp3.1\Humanizer.dll
 C:\Personal\Projects\PaymentApi\PaymentApi\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.Design.dll
 C:\Personal\Projects\PaymentApi\PaymentApi\obj\Debug\netcoreapp3.1\PaymentApi.csproj.CoreCompileInputs.cache
 C:\Personal\Projects\PaymentApi\PaymentApi\obj\Debug\netcoreapp3.1\PaymentApi.MvcApplicationPartsAssemblyInfo.cache
+C:\Personal\Projects\PaymentApi\PaymentApi\obj\Debug\netcoreapp3.1\PaymentApi.csprojAssemblyReference.cache

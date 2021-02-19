@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using PaymentApi.Models;
 using PaymentApi.Services;
+using System.Threading.Tasks;
 
 namespace PaymentApi.Controllers
 {
@@ -9,12 +9,10 @@ namespace PaymentApi.Controllers
     [Route("api/[controller]")]
     public class PaymentController : ControllerBase
     {
-        private readonly ILogger<PaymentController> _logger;
         private readonly IPaymentService _paymentService;
 
-        public PaymentController(ILogger<PaymentController> logger, IPaymentService paymentService)
+        public PaymentController(IPaymentService paymentService)
         {
-            _logger = logger;
             _paymentService = paymentService;
         }
 
@@ -25,25 +23,22 @@ namespace PaymentApi.Controllers
         }
 
         [HttpPost("process")]
-        public IActionResult ProcessPayment([FromBody] PaymentViewModel payment)
+        public async Task<IActionResult> ProcessPayment([FromBody] PaymentViewModel payment)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest();
+                    return StatusCode(400, ModelState);
                 }
-                var response = _paymentService.MakePayment(payment);
-                if (!response)
-                    return StatusCode(500, "Sorry, we are unable to process your payment at this time");
-                return Ok();
+                var response = await _paymentService.MakePayment(payment);
+                return StatusCode(response.StatusCode, response.Message);
             }
-            catch (System.Exception ex)
+            catch
             {
-                _logger.LogError(ex.ToString());
                 return StatusCode(500, "An error has occurred while processing payment");
             }
-            
+
         }
     }
 }

@@ -18,7 +18,7 @@ namespace PaymentApi.Data
                     var db = services.GetRequiredService<PaymentsDbContext>();
                     db.Database.Migrate();
                 }
-                catch (Exception ex)
+                catch
                 {
                     //var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
                     //logger.Error(ex, "An error occurred while migrating the database.");

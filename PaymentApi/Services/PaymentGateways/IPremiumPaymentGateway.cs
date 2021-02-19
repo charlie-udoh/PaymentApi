@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using PaymentApi.Models;
 using System.Threading.Tasks;
 
 namespace PaymentApi.Services.PaymentGateways
 {
     public interface IPremiumPaymentGateway
     {
-        public bool ProcessPayment(string creditCardNumber, string cardHolder, decimal amount);
+        public Task<PaymentGatewayResponse> ProcessPayment(string creditCardNumber, string cardHolder, decimal amount);
     }
 }

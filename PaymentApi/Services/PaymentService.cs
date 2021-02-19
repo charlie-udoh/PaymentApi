@@ -2,6 +2,7 @@
 using PaymentApi.Entities;
 using PaymentApi.Models;
 using PaymentApi.Services.PaymentGateways;
+using System.Threading.Tasks;
 
 namespace PaymentApi.Services
 {
@@ -20,19 +21,19 @@ namespace PaymentApi.Services
             _unitOfWork = unitOfWork;
         }
 
-        public bool MakePayment(PaymentViewModel payment)
+        public async Task<PaymentServiceResponse> MakePayment(PaymentViewModel payment)
         {
-            var result = false;
+            var gatewayResult = new PaymentGatewayResponse();
             if (payment.Amount <= 20)
             {
-                result = _cheapPaymentGateway.ProcessPayment(payment.CreditCardNumber, payment.CardHolder, payment.Amount);
+                gatewayResult = await _cheapPaymentGateway.ProcessPayment(payment.CreditCardNumber, payment.CardHolder, payment.Amount);
             }
             else if (payment.Amount <= 500)
             {
-                result = _expensivePaymentGateway.ProcessPayment(payment.CreditCardNumber, payment.CardHolder, payment.Amount);
-                if (!result)
+                gatewayResult = await _expensivePaymentGateway.ProcessPayment(payment.CreditCardNumber, payment.CardHolder, payment.Amount);
+                if (gatewayResult.StatusCode != 200)
                 {
-                    result = _cheapPaymentGateway.ProcessPayment(payment.CreditCardNumber, payment.CardHolder, payment.Amount);
+                    gatewayResult = await _cheapPaymentGateway.ProcessPayment(payment.CreditCardNumber, payment.CardHolder, payment.Amount);
                 }
             }
             else if (payment.Amount > 500)
@@ -41,18 +42,22 @@ namespace PaymentApi.Services
                 int i = 0;
                 while (i < numberOfRetries)
                 {
-                    result = _premiumPaymentGateway.ProcessPayment(payment.CreditCardNumber, payment.CardHolder, payment.Amount);
-                    if (result)
+                    gatewayResult = await _premiumPaymentGateway.ProcessPayment(payment.CreditCardNumber, payment.CardHolder, payment.Amount);
+                    if (gatewayResult.StatusCode == 200)
                     {
                         break;
                     }
+                    i++;
                 }
             }
-            SavePayment(payment, result);
-            return false;
+            if(gatewayResult.StatusCode == 200)
+                SavePayment(payment, gatewayResult.PaymentStatus);
+            var result = new PaymentServiceResponse { StatusCode = gatewayResult.StatusCode, Message = gatewayResult.Message };
+            
+            return result;
         }
 
-        public void SavePayment(PaymentViewModel payment, bool processingResult)
+        public void SavePayment(PaymentViewModel payment, string paymentStatus)
         {
             _unitOfWork.PaymentRepository.Insert(new Payment
             {
@@ -61,7 +66,7 @@ namespace PaymentApi.Services
                 ExpirationDate = payment.ExpirationDate,
                 SecurityCode = payment.SecurityCode,
                 Amount = payment.Amount,
-                PaymentLog = new PaymentLog { Status = processingResult ? "Processed" : "Pending" }
+                PaymentLog = new PaymentLog { Status = paymentStatus }
             });
             _unitOfWork.Commit();
         }
